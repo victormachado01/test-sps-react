@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import UserService from "../services/UserService";
 import Navbar from "../components/Navbar/Navbar";
 import Modal from "../components/Modal/Modal";
+import { toast } from "react-toastify";
 
 export default function Users() {
     const [loading, setLoading] = useState(true);
@@ -45,10 +46,12 @@ export default function Users() {
     const updateUser = async () => {
         try {
             await UserService.update(selectedUser, { name, type, email });
+            toast.success("Usuário atualizado com sucesso!");
             closeModal();
             getUsers();
         } catch (error) {
             console.error("Erro ao atualizar usuário:", error);
+            toast.error("Erro ao atualizar usuário!");
         }
     };
 
@@ -58,10 +61,12 @@ export default function Users() {
             if (response && response.id) {
                 setUsers([...users, response]);
             }
+            toast.success("Usuário criado com sucesso!");
             closeModal();
             getUsers();
         } catch (error) {
             console.error("Erro ao adicionar usuário:", error);
+            toast.error("Erro ao adicionar usuário!");
         }
     };
 
@@ -69,8 +74,10 @@ export default function Users() {
         try {
             await UserService.delete(id);
             setUsers(users.filter(user => user.id !== id));
+            toast.success("Usuário removido com sucesso!");
         } catch (error) {
             console.error("Erro ao remover usuário:", error);
+            toast.error("Erro ao remover usuário!");
         }
     };
 
@@ -97,8 +104,7 @@ export default function Users() {
                         <h1 className="text-2xl font-medium text-primary w-full md:w-auto text-start md:text-center">Usuários</h1>
                         <button
                             className="btn btn-primary text-white text-lg w-full md:w-auto"
-                            onClick={() => setIsModalOpen(true)}
-                        >
+                            onClick={() => setIsModalOpen(true)}>
                             Novo Usuário
                         </button>
                     </div>
@@ -108,6 +114,7 @@ export default function Users() {
                                 <tr className="bg-gray-500 text-white">
                                     <th className="px-4 py-2">Id</th>
                                     <th className="px-4 py-2">Nome</th>
+                                    <th className="px-4 py-2">Email</th>
                                     <th className="px-4 py-2">Cargo</th>
                                     <th className="px-4 py-2">Ação</th>
                                 </tr>
@@ -117,6 +124,7 @@ export default function Users() {
                                     <tr key={user.id} className={index % 2 === 0 ? "bg-gray-100" : "bg-white"}>
                                         <td className="px-4 py-2 w-1/4 text-center">{index + 1}</td>
                                         <td className="px-4 py-2 w-1/4 text-center">{user.name}</td>
+                                        <td className="px-4 py-2 w-1/4 text-center">{user.email}</td>
                                         <td className="px-4 py-2 w-1/4 text-center">{user.type}</td>
                                         <td className="px-4 py-2 text-center flex items-center justify-center gap-4">
                                             <button
@@ -183,6 +191,7 @@ export default function Users() {
                             <button
                                 className="btn btn-primary text-white"
                                 onClick={isEditing ? updateUser : addUser}
+                                disabled={!name || !type || !email || (!isEditing && !password)}
                             >
                                 {isEditing ? "Atualizar" : "Criar"}
                             </button>
