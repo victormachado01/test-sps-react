@@ -1,7 +1,10 @@
 import React from "react";
+import LoginForm from "../components/LoginForm/LoginForm";
 
-function pages() {
-  return <div>Página de Login</div>;
+export default function SignIn() {
+    return (
+        <main className="w-full h-screen flex items-center justify-center p-6">
+            <LoginForm />
+        </main>
+    )
 }
-
-export default pages;
